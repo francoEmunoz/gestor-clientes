@@ -24,17 +24,25 @@ def iniciar():
             for c in db.Clientes.lista:
                 print(c)
 
+
         elif opcion == '2':
             print("Buscando un cliente...\n")
+
             dni = helpers.leer_texto(
-                8, 8, "DNI (2 ints y 1 char)").upper()
+                8, 8, "DNI (8 chars)").upper()
             cliente = db.Clientes.buscar(dni)
             print(cliente) if cliente else print("Cliente no encontrado.")
 
+
         elif opcion == '3':
             print("Añadiendo un cliente...\n")
-            dni = helpers.leer_texto(
-                8, 8, "DNI (2 ints y 1 char)").upper()
+          
+            dni = None
+            while True:
+                dni = helpers.leer_texto(
+                    8, 8, "DNI (8 chars)").upper()
+                if helpers.dni_valido(dni, db.Clientes.lista):
+                    break
             nombre = helpers.leer_texto(
                 2, 30, "Nombre (de 2 a 30 chars)").capitalize()
             apellido = helpers.leer_texto(
@@ -42,10 +50,12 @@ def iniciar():
             db.Clientes.crear(dni, nombre, apellido)
             print("Cliente añadido correctamente.")
 
+
         elif opcion == '4':
             print("Modificando un cliente...\n")
+
             dni = helpers.leer_texto(
-                8, 8, "DNI (2 ints y 1 char)").upper()
+                8, 8, "DNI (8 chars)").upper()
             cliente = db.Clientes.buscar(dni)
             if cliente:
                 nombre = helpers.leer_texto(
@@ -57,10 +67,12 @@ def iniciar():
             else:
                 print("Cliente no encontrado.")
 
+
         elif opcion == '5':
             print("Borrando un cliente...\n")
+
             dni = helpers.leer_texto(
-                8, 8, "DNI (2 ints y 1 char)").upper()
+                8, 8, "DNI (8 chars)").upper()
             cliente = db.Clientes.buscar(dni)
             if cliente:
                 db.Clientes.borrar(dni)
@@ -68,8 +80,9 @@ def iniciar():
             else:
                 print('Cliente no encontrado.')
 
+
         elif opcion == '6':
-            print("Saliendo...\n")
+            print("Saliendo...\n")   
             break
 
         input("\nPresiona ENTER para continuar...")
