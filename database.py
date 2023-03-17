@@ -1,16 +1,24 @@
+import csv
+import config
+
 class Cliente:
     def __init__(self, dni, nombre, apellido):
         self.dni = dni
         self.nombre = nombre
-        self.apelldo = apellido
+        self.apellido = apellido
 
     def __str__(self):
-        return f'({self.dni}) {self.nombre} {self.apelldo}'
+        return f'({self.dni}) {self.nombre} {self.apellido}'
     
     
 class Clientes:
 
     lista = []
+    with open(config.DATABASE_PATH, newline="\n") as csvfile:
+        reader = csv.reader(csvfile, delimiter=";")
+        for dni, nombre, apellido in reader:
+            cliente = Cliente(dni, nombre, apellido)
+            lista.append(cliente)
 
     @staticmethod
     def buscar(dni):
@@ -22,18 +30,29 @@ class Clientes:
     def crear(dni, nombre, apellido):
         cliente = Cliente(dni, nombre, apellido)
         Clientes.lista.append(cliente)
+        Clientes.guardar()
         return cliente
     
     @staticmethod
-    def modificar(dni, nombre, apellido):
+    def editar(dni, nombre, apellido):
         for indice, cliente in enumerate(Clientes.lista):
             if cliente.dni == dni:
                 Clientes.lista[indice].nombre = nombre
                 Clientes.lista[indice].apellido = apellido
+                Clientes.guardar()
                 return cliente
             
     @staticmethod
     def borrar(dni):
         for indice, cliente in enumerate(Clientes.lista):
             if cliente.dni == dni:
-                return Clientes.lista.pop(indice)
+                cliente = Clientes.lista.pop(indice)
+                Clientes.guardar()
+                return cliente
+            
+    @staticmethod
+    def guardar():
+        with open(config.DATABASE_PATH, "w", newline="\n") as csvfile:
+            writer = csv.writer(csvfile, delimiter=";")
+            for c in Clientes.lista:
+                writer.writerow((c.dni, c.nombre, c.apellido))
